@@ -1,0 +1,3034 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quanto Costa Davvero?</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#050806;
+ color:#fff;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* AUTH */
+#auth{
+ min-height:100vh;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ padding:20px;
+ background:radial-gradient(circle at top,#164d29,#050806 65%);
+}
+.auth{
+ width:100%;
+ max-width:430px;
+ padding:32px;
+ background:#101711;
+ border:1px solid #29372d;
+ border-radius:25px;
+ box-shadow:0 30px 100px #000;
+}
+.logo{
+ text-align:center;
+ color:#6cff9b;
+ font-weight:bold;
+ margin-bottom:25px;
+}
+.auth h1{text-align:center}
+.sub{text-align:center;color:#89968e;line-height:1.5}
+.tabs{
+ display:flex;
+ gap:5px;
+ padding:5px;
+ margin:25px 0 20px;
+ background:#070b08;
+ border-radius:13px;
+}
+.tabs button{
+ flex:1;
+ border:0;
+ padding:11px;
+ border-radius:9px;
+ background:transparent;
+ color:#89968e;
+}
+.tabs .active{
+ background:#6cff9b;
+ color:#061009;
+}
+.form{display:none}
+.form.active{display:block}
+label{
+ display:block;
+ color:#aab5ae;
+ font-size:13px;
+ margin-bottom:7px;
+}
+input,textarea,select{
+ width:100%;
+ padding:13px;
+ margin-bottom:15px;
+ border-radius:12px;
+ border:1px solid #2a382f;
+ background:#070b08;
+ color:#fff;
+ outline:0;
+}
+textarea{min-height:110px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:#6cff9b}
+.primary{
+ width:100%;
+ border:0;
+ padding:14px;
+ border-radius:12px;
+ background:#6cff9b;
+ color:#061009;
+ font-weight:bold;
+}
+.error{
+ color:#ff7770;
+ text-align:center;
+ margin-top:13px;
+ font-size:13px;
+}
+
+/* APP */
+#app{display:none}
+header{
+ height:70px;
+ padding:0 24px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ position:sticky;
+ top:0;
+ z-index:20;
+ background:#050806ee;
+ border-bottom:1px solid #202b24;
+}
+.brand{color:#6cff9b;font-weight:bold}
+.user{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+.staff-badge{
+ display:none;
+ padding:6px 10px;
+ border-radius:20px;
+ background:#0b2916;
+ color:#6cff9b;
+ font-size:11px;
+ font-weight:bold;
+}
+.logout{
+ border:0;
+ border-radius:10px;
+ padding:9px 12px;
+ background:#29100f;
+ color:#ff8178;
+}
+.layout{display:flex;min-height:calc(100vh - 70px)}
+.sidebar{
+ width:225px;
+ flex-shrink:0;
+ padding:18px 12px;
+ background:#060906;
+ border-right:1px solid #202b24;
+}
+.nav{
+ width:100%;
+ text-align:left;
+ border:0;
+ border-radius:11px;
+ padding:13px;
+ margin-bottom:6px;
+ background:transparent;
+ color:#859189;
+}
+.nav:hover,.nav.active{
+ background:#142019;
+ color:#6cff9b;
+}
+#staffNav{
+ display:none;
+ margin-top:14px;
+ padding-top:15px;
+ border-top:1px solid #202b24;
+}
+main{
+ width:100%;
+ max-width:1400px;
+ padding:35px;
+}
+.page{display:none}
+.page.active{display:block}
+h1{font-size:36px;margin-top:0}
+.desc{color:#89968e;margin-bottom:28px}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:20px;
+}
+.card{
+ background:#101711;
+ border:1px solid #263229;
+ border-radius:20px;
+ padding:24px;
+}
+.card h2{margin-top:0}
+.big{
+ color:#6cff9b;
+ font-size:40px;
+ font-weight:bold;
+}
+.muted{color:#89968e}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+}
+.stat{
+ padding:16px;
+ background:#080d09;
+ border:1px solid #222e27;
+ border-radius:13px;
+}
+.stat-number{
+ color:#6cff9b;
+ font-size:23px;
+ font-weight:bold;
+}
+.stat-label{
+ color:#778279;
+ font-size:12px;
+ margin-top:4px;
+}
+
+/* LIST */
+.item,.ticket,.notification,.review-card{
+ padding:17px;
+ margin-bottom:11px;
+ border:1px solid #263229;
+ border-radius:15px;
+ background:#080d09;
+}
+.item-top,.ticket-top{
+ display:flex;
+ justify-content:space-between;
+ gap:15px;
+}
+.item-title,.ticket-title{
+ font-weight:bold;
+ font-size:16px;
+}
+.meta{
+ color:#727d75;
+ font-size:12px;
+ margin-top:6px;
+}
+.green{color:#6cff9b;font-weight:bold}
+.actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ margin-top:13px;
+}
+.actions button{
+ border:0;
+ border-radius:9px;
+ padding:9px 11px;
+}
+.blue{background:#10263b;color:#78c2ff}
+.greenbtn{background:#0d2b18;color:#6cff9b}
+.red{background:#29100f;color:#ff8178}
+
+/* STATUS */
+.status{
+ padding:6px 9px;
+ border-radius:20px;
+ height:max-content;
+ font-size:10px;
+ font-weight:bold;
+}
+.open{background:#30230c;color:#ffd166}
+.progress{background:#0c2135;color:#73bdff}
+.closed{background:#0c2817;color:#6cff9b}
+
+/* TICKET */
+.ticket-description{
+ margin-top:15px;
+ line-height:1.5;
+ white-space:pre-wrap;
+ color:#c7d0ca;
+}
+.reply{
+ margin-top:12px;
+ padding:14px;
+ border-radius:12px;
+ background:#101711;
+ border:1px solid #29352d;
+}
+.reply.staff{
+ background:#0b1c10;
+ border-color:#2b6039;
+}
+.reply-author{
+ color:#7d8981;
+ font-size:11px;
+ margin-bottom:6px;
+}
+.reply-text{
+ white-space:pre-wrap;
+ line-height:1.5;
+}
+.reply-area{
+ margin-top:15px;
+ padding-top:15px;
+ border-top:1px solid #263229;
+}
+
+/* RECENSIONE */
+.review-box{
+ margin-top:15px;
+ padding:15px;
+ border-top:1px solid #263229;
+}
+.stars{
+ display:flex;
+ gap:5px;
+ margin:10px 0;
+}
+.star{
+ border:0;
+ background:transparent;
+ color:#4d584f;
+ font-size:30px;
+ padding:0;
+ line-height:1;
+}
+.star.selected,
+.star:hover{
+ color:#ffd166;
+}
+.review-stars{
+ color:#ffd166;
+ font-size:20px;
+ letter-spacing:2px;
+}
+.review-average{
+ display:flex;
+ align-items:center;
+ gap:15px;
+ padding:18px;
+ margin-bottom:18px;
+ background:#080d09;
+ border:1px solid #263229;
+ border-radius:15px;
+}
+.average-number{
+ color:#ffd166;
+ font-size:34px;
+ font-weight:bold;
+}
+
+/* GOAL */
+.progress-box{
+ height:12px;
+ margin:18px 0 10px;
+ background:#202a23;
+ border-radius:20px;
+ overflow:hidden;
+}
+.progress-bar{
+ width:0;
+ height:100%;
+ background:#6cff9b;
+ transition:.4s;
+}
+.goal-line{
+ display:flex;
+ justify-content:space-between;
+ color:#89968e;
+ font-size:13px;
+}
+
+/* STAFF */
+.staff-stats{
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ gap:12px;
+ margin-bottom:20px;
+}
+.search{
+ display:flex;
+ gap:10px;
+}
+.search input{margin:0}
+
+/* NOTIFICATIONS */
+.notification.unread{
+ background:#0b1c10;
+ border-color:#367448;
+}
+.notification-title{font-weight:bold;margin-bottom:6px}
+.notification-text{color:#adb7b0;line-height:1.5}
+.notification-date{
+ color:#68736c;
+ font-size:11px;
+ margin-top:8px;
+}
+
+/* TOAST */
+#toast{
+ display:none;
+ position:fixed;
+ right:20px;
+ bottom:20px;
+ z-index:999;
+ padding:14px 18px;
+ border-radius:12px;
+ background:#111a14;
+ border:1px solid #304438;
+}
+
+/* MOBILE */
+@media(max-width:850px){
+ .sidebar{width:68px}
+ .nav{text-align:center;font-size:0}
+ main{padding:20px}
+ .grid{grid-template-columns:1fr}
+ .staff-stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:520px){
+ header{padding:0 12px}
+ .brand{font-size:13px}
+ h1{font-size:29px}
+ .stats,.staff-stats{grid-template-columns:1fr}
+ .ticket-top,.item-top{flex-direction:column}
+ .search{flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="auth">
+<div class="auth">
+
+<div class="logo">💸 QUANTO COSTA DAVVERO?</div>
+
+<h1>Benvenuto</h1>
+
+<p class="sub">
+Scopri quante ore di lavoro vale davvero ciò che compri.
+</p>
+
+<div class="tabs">
+<button id="loginTab" class="active" onclick="switchAuth('login')">
+Login
+</button>
+<button id="registerTab" onclick="switchAuth('register')">
+Registrati
+</button>
+</div>
+
+<form id="loginForm" class="form active" onsubmit="login(event)">
+<label>Email</label>
+<input id="loginEmail" type="email" required placeholder="La tua email">
+
+<label>Password</label>
+<input id="loginPassword" type="password" required placeholder="Password">
+
+<button class="primary">Accedi 🔑</button>
+</form>
+
+<form id="registerForm" class="form" onsubmit="register(event)">
+<label>Nome</label>
+<input id="registerName" required placeholder="Il tuo nome">
+
+<label>Email</label>
+<input id="registerEmail" type="email" required placeholder="La tua email">
+
+<label>Password</label>
+<input id="registerPassword" type="password" minlength="6" required placeholder="Almeno 6 caratteri">
+
+<button class="primary">Crea account 🚀</button>
+</form>
+
+<div id="authError" class="error"></div>
+
+</div>
+</div>
+
+
+<!-- APP -->
+<div id="app">
+
+<header>
+<div class="brand">💸 QUANTO COSTA DAVVERO?</div>
+
+<div class="user">
+<span id="staffBadge" class="staff-badge">👑 STAFF CAPO</span>
+<span id="username" class="username"></span>
+<button class="logout" onclick="logout()">Esci</button>
+</div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar">
+
+<button class="nav active" onclick="page('home',this)">🏠 Home</button>
+<button class="nav" onclick="page('calculator',this)">💸 Calcolatore</button>
+<button class="nav" onclick="page('purchases',this)">🛒 Acquisti</button>
+<button class="nav" onclick="page('goal',this)">🎯 Obiettivo</button>
+<button class="nav" onclick="page('tickets',this)">🎫 Ticket</button>
+<button class="nav" onclick="page('reviews',this)">⭐ Recensioni</button>
+<button class="nav" onclick="page('notifications',this)">🔔 Notifiche</button>
+<button class="nav" onclick="page('profile',this)">👤 Profilo</button>
+
+<button id="staffNav" class="nav" onclick="page('staff',this)">
+👑 Area Staff
+</button>
+
+</aside>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="page active">
+
+<h1>Ciao, <span id="homeName"></span> 👋</h1>
+<p class="desc">La tua dashboard personale.</p>
+
+<div class="grid">
+
+<div class="card">
+<h2>💰 Spesa totale</h2>
+<div id="spent" class="big">€0</div>
+<p class="muted">Acquisti registrati</p>
+</div>
+
+<div class="card">
+<h2>⏱️ Ore di lavoro</h2>
+<div id="hours" class="big">0h</div>
+<p class="muted">Ore necessarie per gli acquisti</p>
+</div>
+
+<div class="card">
+<h2>🎫 Ticket</h2>
+<div id="ticketCount" class="big">0</div>
+<p class="muted">Ticket inviati</p>
+</div>
+
+<div class="card">
+<h2>🔔 Notifiche</h2>
+<div id="notificationCount" class="big">0</div>
+<p class="muted">Notifiche non lette</p>
+</div>
+
+<div class="card">
+<h2>📊 Statistiche</h2>
+
+<div class="stats">
+
+<div class="stat">
+<div id="statPurchases" class="stat-number">0</div>
+<div class="stat-label">Acquisti</div>
+</div>
+
+<div class="stat">
+<div id="statSpent" class="stat-number">€0</div>
+<div class="stat-label">Spesa</div>
+</div>
+
+<div class="stat">
+<div id="statHours" class="stat-number">0h</div>
+<div class="stat-label">Ore</div>
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+
+
+<!-- CALCOLATORE -->
+<section id="calculator" class="page">
+
+<h1>💸 Quanto costa davvero?</h1>
+<p class="desc">Inserisci prezzo, stipendio e ore lavorate.</p>
+
+<div class="grid">
+
+<div class="card">
+
+<h2>Calcola</h2>
+
+<label>Nome acquisto</label>
+<input id="product" placeholder="Es. Computer">
+
+<label>Prezzo (€)</label>
+<input id="price" type="number" min="0" placeholder="1000">
+
+<label>Stipendio mensile (€)</label>
+<input id="salary" type="number" min="0" placeholder="1500">
+
+<label>Ore lavorate al mese</label>
+<input id="workHours" type="number" min="1" placeholder="160">
+
+<button class="primary" onclick="calculate()">
+Calcola 💸
+</button>
+
+<div id="result" class="result">
+
+<div class="muted">Questo acquisto vale circa</div>
+<div id="resultHours" class="big">0 ore</div>
+<div id="resultMessage"></div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>💡 Come funziona?</h2>
+
+<p class="muted" style="line-height:1.7">
+Il sistema calcola il valore indicativo di un'ora
+di lavoro dividendo lo stipendio mensile per le
+ore lavorate.
+</p>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- ACQUISTI -->
+<section id="purchases" class="page">
+
+<h1>🛒 Acquisti</h1>
+<p class="desc">La tua cronologia.</p>
+
+<div class="card">
+<div id="purchaseList"></div>
+</div>
+
+</section>
+
+
+<!-- OBIETTIVO -->
+<section id="goal" class="page">
+
+<h1>🎯 Obiettivo</h1>
+<p class="desc">Crea un obiettivo di risparmio.</p>
+
+<div class="grid">
+
+<div class="card">
+
+<h2>Nuovo obiettivo</h2>
+
+<label>Nome</label>
+<input id="goalName" placeholder="Es. MacBook">
+
+<label>Prezzo (€)</label>
+<input id="goalPrice" type="number" min="1">
+
+<label>Risparmiato (€)</label>
+<input id="goalSaved" type="number" min="0">
+
+<button class="primary" onclick="saveGoal()">
+Salva obiettivo 🎯
+</button>
+
+</div>
+
+<div class="card">
+
+<h2 id="goalTitle">Nessun obiettivo</h2>
+
+<div class="progress-box">
+<div id="goalBar" class="progress-bar"></div>
+</div>
+
+<div class="goal-line">
+<span id="goalSavedText">€0</span>
+<span id="goalPercent">0%</span>
+</div>
+
+<br>
+
+<div class="goal-line">
+<span>Rimanenti</span>
+<span id="goalRemaining">€0</span>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- TICKET -->
+<section id="tickets" class="page">
+
+<h1>🎫 Assistenza</h1>
+<p class="desc">Segnala bug, problemi o suggerimenti.</p>
+
+<div class="grid">
+
+<div class="card">
+
+<h2>Apri ticket</h2>
+
+<label>Titolo</label>
+<input id="ticketTitle" placeholder="Cosa è successo?">
+
+<label>Categoria</label>
+<select id="ticketType">
+<option>Bug</option>
+<option>Problema</option>
+<option>Suggerimento</option>
+<option>Altro</option>
+</select>
+
+<label>Descrizione</label>
+<textarea id="ticketDescription"
+placeholder="Descrivi il problema..."></textarea>
+
+<button class="primary" onclick="createTicket()">
+Invia ticket 🎫
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>I miei ticket</h2>
+
+<div id="myTickets"></div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- RECENSIONI -->
+<section id="reviews" class="page">
+
+<h1>⭐ Recensioni</h1>
+
+<p class="desc">
+Lascia una recensione dopo aver ricevuto assistenza.
+</p>
+
+<div class="card">
+
+<h2>Le mie recensioni</h2>
+
+<div id="myReviews"></div>
+
+</div>
+
+</section>
+
+
+<!-- NOTIFICHE -->
+<section id="notifications" class="page">
+
+<h1>🔔 Notifiche</h1>
+
+<p class="desc">
+Aggiornamenti sui tuoi ticket.
+</p>
+
+<div id="notificationsList"></div>
+
+</section>
+
+
+<!-- PROFILO -->
+<section id="profile" class="page">
+
+<h1>👤 Profilo</h1>
+<p class="desc">Le tue informazioni.</p>
+
+<div class="grid">
+
+<div class="card">
+
+<h2>Account</h2>
+
+<p id="profileEmail" class="green"></p>
+
+<label>Nome</label>
+<input id="profileName">
+
+<button class="primary" onclick="saveProfile()">
+Salva 💾
+</button>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- STAFF -->
+<section id="staff" class="page">
+
+<h1>👑 Area Staff</h1>
+
+<p class="desc">
+Gestione ticket e recensioni.
+</p>
+
+<div class="staff-stats">
+
+<div class="stat">
+<div id="staffTotal" class="stat-number">0</div>
+<div class="stat-label">Ticket</div>
+</div>
+
+<div class="stat">
+<div id="staffOpen" class="stat-number">0</div>
+<div class="stat-label">Aperti</div>
+</div>
+
+<div class="stat">
+<div id="staffProgress" class="stat-number">0</div>
+<div class="stat-label">In lavorazione</div>
+</div>
+
+<div class="stat">
+<div id="staffClosed" class="stat-number">0</div>
+<div class="stat-label">Risolti</div>
+</div>
+
+<div class="stat">
+<div id="staffReviews" class="stat-number">0</div>
+<div class="stat-label">Recensioni</div>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🔎 Cerca ticket</h2>
+
+<div class="search">
+
+<input
+id="staffSearch"
+oninput="renderStaff()"
+placeholder="ID, nome, email, titolo...">
+
+</div>
+
+</div>
+
+<br>
+
+
+<div class="card">
+
+<h2>🎫 Ticket utenti</h2>
+
+<div id="staffTickets"></div>
+
+</div>
+
+
+<br>
+
+
+<div class="card">
+
+<h2>⭐ Recensioni degli utenti</h2>
+
+<div id="staffReviewsList"></div>
+
+</div>
+
+</section>
+
+</main>
+</div>
+</div>
+
+<div id="toast"></div>
+
+
+<script>
+
+/* =========================
+   CONFIGURAZIONE
+========================= */
+
+const STAFF_EMAIL="famosocantante4@gmail.com";
+const STAFF_PASSWORD="Siracusa22";
+
+
+/* =========================
+   DATABASE LOCALE
+========================= */
+
+let users=
+JSON.parse(localStorage.getItem("QCD_USERS")||"[]");
+
+let tickets=
+JSON.parse(localStorage.getItem("QCD_TICKETS")||"[]");
+
+let notifications=
+JSON.parse(localStorage.getItem("QCD_NOTIFICATIONS")||"[]");
+
+let reviews=
+JSON.parse(localStorage.getItem("QCD_REVIEWS")||"[]");
+
+let session=
+JSON.parse(localStorage.getItem("QCD_SESSION")||"null");
+
+
+function save(){
+
+ localStorage.setItem(
+  "QCD_USERS",
+  JSON.stringify(users)
+ );
+
+ localStorage.setItem(
+  "QCD_TICKETS",
+  JSON.stringify(tickets)
+ );
+
+ localStorage.setItem(
+  "QCD_NOTIFICATIONS",
+  JSON.stringify(notifications)
+ );
+
+ localStorage.setItem(
+  "QCD_REVIEWS",
+  JSON.stringify(reviews)
+);
+
+
+}
+
+
+function saveSession(){
+
+ localStorage.setItem(
+  "QCD_SESSION",
+  JSON.stringify(session)
+ );
+
+}
+
+
+/* =========================
+   CREA STAFF
+========================= */
+
+if(!users.some(
+ u=>u.email===STAFF_EMAIL
+)){
+
+ users.push({
+
+  id:"STAFF-CAPO",
+
+  name:"Staff Capo",
+
+  email:STAFF_EMAIL,
+
+  password:STAFF_PASSWORD,
+
+  role:"staff",
+
+  purchases:[],
+
+  goal:null
+
+ });
+
+ save();
+
+}
+
+
+/* =========================
+   AUTH
+========================= */
+
+function switchAuth(type){
+
+ document
+ .getElementById("loginForm")
+ .classList
+ .toggle("active",type==="login");
+
+ document
+ .getElementById("registerForm")
+ .classList
+ .toggle("active",type==="register");
+
+ document
+ .getElementById("loginTab")
+ .classList
+ .toggle("active",type==="login");
+
+ document
+ .getElementById("registerTab")
+ .classList
+ .toggle("active",type==="register");
+
+ document
+ .getElementById("authError")
+ .textContent="";
+
+}
+
+
+function register(e){
+
+ e.preventDefault();
+
+ const name=
+ document.getElementById("registerName")
+ .value.trim();
+
+ const email=
+ document.getElementById("registerEmail")
+ .value.trim()
+ .toLowerCase();
+
+ const password=
+ document.getElementById("registerPassword")
+ .value;
+
+
+ if(email===STAFF_EMAIL.toLowerCase()){
+
+  error(
+   "Questa email è riservata allo Staff."
+  );
+
+  return;
+
+ }
+
+
+ if(users.some(u=>u.email===email)){
+
+  error("Email già registrata.");
+
+  return;
+
+ }
+
+
+ const user={
+
+  id:crypto.randomUUID(),
+
+  name,
+
+  email,
+
+  password,
+
+  role:"user",
+
+  purchases:[],
+
+  goal:null
+
+ };
+
+
+ users.push(user);
+
+ save();
+
+ session=user;
+
+ saveSession();
+
+ start();
+
+ toast("Account creato 🚀");
+
+}
+
+
+function login(e){
+
+ e.preventDefault();
+
+ const email=
+ document.getElementById("loginEmail")
+ .value.trim()
+ .toLowerCase();
+
+ const password=
+ document.getElementById("loginPassword")
+ .value;
+
+ const user=users.find(
+
+  u=>
+   u.email.toLowerCase()===email &&
+   u.password===password
+
+ );
+
+ if(!user){
+
+  error(
+   "Email o password non corretti."
+  );
+
+  return;
+
+ }
+
+ session=user;
+
+ saveSession();
+
+ start();
+
+}
+
+
+function error(message){
+
+ document
+ .getElementById("authError")
+ .textContent=message;
+
+}
+
+
+function logout(){
+
+ session=null;
+
+ localStorage.removeItem(
+  "QCD_SESSION"
+ );
+
+ document.getElementById(
+  "app"
+ ).style.display="none";
+
+ document.getElementById(
+  "auth"
+ ).style.display="flex";
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+function start(){
+
+ document.getElementById(
+  "auth"
+ ).style.display="none";
+
+ document.getElementById(
+  "app"
+ ).style.display="block";
+
+ document.getElementById(
+  "username"
+ ).textContent=session.name;
+
+ document.getElementById(
+  "homeName"
+ ).textContent=session.name;
+
+ const staff=
+ session.role==="staff";
+
+ document.getElementById(
+  "staffNav"
+ ).style.display=
+ staff?"block":"none";
+
+ document.getElementById(
+  "staffBadge"
+ ).style.display=
+ staff?"inline-block":"none";
+
+ refresh();
+
+}
+
+
+/* =========================
+   NAVIGAZIONE
+========================= */
+
+function page(id,btn){
+
+ if(
+  id==="staff" &&
+  session.role!=="staff"
+ ){
+
+  toast("Area riservata.");
+
+  return;
+
+ }
+
+ document
+ .querySelectorAll(".page")
+ .forEach(x=>
+  x.classList.remove("active")
+ );
+
+ document
+ .getElementById(id)
+ .classList.add("active");
+
+ document
+ .querySelectorAll(".nav")
+ .forEach(x=>
+  x.classList.remove("active")
+ );
+
+ if(btn)
+  btn.classList.add("active");
+
+
+ if(id==="notifications"){
+
+  notifications.forEach(n=>{
+
+   if(n.userId===session.id)
+    n.read=true;
+
+  });
+
+  save();
+
+ }
+
+
+ refresh();
+
+}
+
+
+/* =========================
+   CALCOLATORE
+========================= */
+
+function calculate(){
+
+ const product=
+ document.getElementById("product")
+ .value.trim();
+
+ const price=
+ Number(document.getElementById("price").value);
+
+ const salary=
+ Number(document.getElementById("salary").value);
+
+ const workHours=
+ Number(document.getElementById("workHours").value);
+
+
+ if(
+  !product||
+  price<=0||
+  salary<=0||
+  workHours<=0
+ ){
+
+  toast(
+   "Inserisci tutti i dati correttamente."
+  );
+
+  return;
+
+ }
+
+
+ const hourly=salary/workHours;
+
+ const hours=price/hourly;
+
+
+ document.getElementById(
+  "resultHours"
+ ).textContent=
+ hours.toFixed(1)+" ore";
+
+
+ document.getElementById(
+  "resultMessage"
+ ).textContent=
+
+ hours<2
+ ?"Meno di due ore di lavoro."
+ :hours<8
+ ?"Meno di una giornata lavorativa."
+ :hours<40
+ ?"Diverse giornate di lavoro."
+ :"Una quantità importante di ore di lavoro.";
+
+
+ document.getElementById(
+  "result"
+ ).classList.add("show");
+
+
+ if(!session.purchases)
+  session.purchases=[];
+
+
+ session.purchases.push({
+
+  id:crypto.randomUUID(),
+
+  product,
+
+  price,
+
+  hours,
+
+  date:new Date().toLocaleString("it-IT")
+
+ });
+
+
+ updateUser();
+
+ toast("Acquisto salvato 💾");
+
+}
+
+
+/* =========================
+   USER
+========================= */
+
+function updateUser(){
+
+ const i=
+ users.findIndex(
+  u=>u.id===session.id
+ );
+
+ if(i!==-1){
+
+  users[i]=session;
+
+  save();
+
+  saveSession();
+
+ }
+
+}
+
+
+/* =========================
+   ACQUISTI
+========================= */
+
+function renderPurchases(){
+
+ const box=
+ document.getElementById(
+  "purchaseList"
+ );
+
+ const list=
+ session.purchases||[];
+
+ if(!list.length){
+
+  box.innerHTML=
+  '<p class="muted">Nessun acquisto.</p>';
+
+  return;
+
+ }
+
+
+ box.innerHTML=
+ list.slice().reverse().map(p=>`
+
+ <div class="item">
+
+  <div class="item-top">
+
+   <div>
+
+    <div class="item-title">
+     ${safe(p.product)}
+    </div>
+
+    <div class="meta">
+     ${p.date}
+    </div>
+
+   </div>
+
+   <div class="green">
+    ${p.hours.toFixed(1)}h
+   </div>
+
+  </div>
+
+  <div class="meta">
+   Prezzo: €${p.price.toFixed(2)}
+  </div>
+
+  <div class="actions">
+
+   <button
+    class="red"
+    onclick="deletePurchase('${p.id}')"
+   >
+    Elimina
+   </button>
+
+  </div>
+
+ </div>
+
+ `).join("");
+
+}
+
+
+function deletePurchase(id){
+
+ session.purchases=
+ session.purchases.filter(
+  p=>p.id!==id
+ );
+
+ updateUser();
+
+ refresh();
+
+ toast("Acquisto eliminato.");
+
+}
+
+
+/* =========================
+   HOME
+========================= */
+
+function renderHome(){
+
+ const purchases=
+ session.purchases||[];
+
+ const spent=
+ purchases.reduce(
+  (a,p)=>a+p.price,0
+ );
+
+ const hours=
+ purchases.reduce(
+  (a,p)=>a+p.hours,0
+ );
+
+ const myTickets=
+ tickets.filter(
+  t=>t.userId===session.id
+ );
+
+ const unread=
+ notifications.filter(
+  n=>
+   n.userId===session.id &&
+   !n.read
+ ).length;
+
+
+ document.getElementById(
+  "spent"
+ ).textContent=
+ "€"+spent.toFixed(0);
+
+
+ document.getElementById(
+  "hours"
+ ).textContent=
+ hours.toFixed(1)+"h";
+
+
+ document.getElementById(
+  "ticketCount"
+ ).textContent=
+ myTickets.length;
+
+
+ document.getElementById(
+  "notificationCount"
+ ).textContent=
+ unread;
+
+
+ document.getElementById(
+  "statPurchases"
+ ).textContent=
+ purchases.length;
+
+
+ document.getElementById(
+  "statSpent"
+ ).textContent=
+ "€"+spent.toFixed(0);
+
+
+ document.getElementById(
+  "statHours"
+ ).textContent=
+ hours.toFixed(1)+"h";
+
+}
+
+
+/* =========================
+   OBIETTIVO
+========================= */
+
+function saveGoal(){
+
+ const name=
+ document.getElementById(
+  "goalName"
+ ).value.trim();
+
+ const price=
+ Number(document.getElementById(
+  "goalPrice"
+ ).value);
+
+ const saved=
+ Number(document.getElementById(
+  "goalSaved"
+ ).value);
+
+
+ if(!name||price<=0||saved<0){
+
+  toast(
+   "Inserisci dati validi."
+  );
+
+  return;
+
+ }
+
+
+ session.goal={
+
+  name,
+
+  price,
+
+  saved:Math.min(
+   saved,
+   price
+  )
+
+ };
+
+
+ updateUser();
+
+ renderGoal();
+
+ toast(
+  "Obiettivo salvato 🎯"
+ );
+
+}
+
+
+function renderGoal(){
+
+ const goal=session.goal;
+
+ if(!goal){
+
+  document.getElementById(
+   "goalTitle"
+  ).textContent=
+  "Nessun obiettivo";
+
+  document.getElementById(
+   "goalBar"
+  ).style.width="0%";
+
+  document.getElementById(
+   "goalSavedText"
+  ).textContent="€0";
+
+  document.getElementById(
+   "goalPercent"
+  ).textContent="0%";
+
+  document.getElementById(
+   "goalRemaining"
+  ).textContent="€0";
+
+  return;
+
+ }
+
+
+ const percent=
+ Math.min(
+  100,
+  goal.saved/goal.price*100
+ );
+
+ const remaining=
+ Math.max(
+  0,
+  goal.price-goal.saved
+ );
+
+
+ document.getElementById(
+  "goalTitle"
+ ).textContent=
+ "🎯 "+goal.name;
+
+
+ document.getElementById(
+  "goalBar"
+ ).style.width=
+ percent+"%";
+
+
+ document.getElementById(
+  "goalSavedText"
+ ).textContent=
+ "€"+goal.saved.toFixed(2);
+
+
+ document.getElementById(
+  "goalPercent"
+ ).textContent=
+ percent.toFixed(0)+"%";
+
+
+ document.getElementById(
+  "goalRemaining"
+ ).textContent=
+
+ remaining===0
+ ?"Obiettivo raggiunto 🎉"
+ :"€"+remaining.toFixed(2);
+
+}
+
+
+/* =========================================================
+   TICKET
+========================================================= */
+
+
+/* CREA TICKET */
+
+function createTicket(){
+
+ const title=
+ document.getElementById(
+  "ticketTitle"
+ ).value.trim();
+
+ const type=
+ document.getElementById(
+  "ticketType"
+ ).value;
+
+ const description=
+ document.getElementById(
+  "ticketDescription"
+ ).value.trim();
+
+
+ if(!title||!description){
+
+  toast(
+   "Compila tutti i campi."
+  );
+
+  return;
+
+ }
+
+
+ const ticket={
+
+  id:
+   "QCD-"+
+   Math.floor(
+    100000+
+    Math.random()*900000
+   ),
+
+  userId:session.id,
+
+  userName:session.name,
+
+  userEmail:session.email,
+
+  title,
+
+  type,
+
+  description,
+
+  status:"open",
+
+  created:
+   new Date().toLocaleString("it-IT"),
+
+  replies:[],
+
+  review:null
+
+ };
+
+
+ tickets.push(ticket);
+
+ save();
+
+
+ document.getElementById(
+  "ticketTitle"
+ ).value="";
+
+ document.getElementById(
+  "ticketDescription"
+ ).value="";
+
+
+ refresh();
+
+ toast(
+  "Ticket inviato 🎫"
+ );
+
+}
+
+
+/* MIEI TICKET */
+
+function renderMyTickets(){
+
+ const box=
+ document.getElementById(
+  "myTickets"
+ );
+
+ const list=
+ tickets.filter(
+  t=>t.userId===session.id
+ );
+
+
+ if(!list.length){
+
+  box.innerHTML=
+  '<p class="muted">Nessun ticket.</p>';
+
+  return;
+
+ }
+
+
+ box.innerHTML=
+ list.slice().reverse().map(t=>{
+
+  const replies=
+   (t.replies||[])
+   .map(r=>`
+
+    <div class="reply ${
+     r.authorRole==="staff"
+     ?"staff"
+     :""
+    }">
+
+     <div class="reply-author">
+
+      ${
+       r.authorRole==="staff"
+       ?"👑 Staff"
+       :"👤 Tu"
+      }
+
+      • ${r.date}
+
+     </div>
+
+     <div class="reply-text">
+      ${safe(r.text)}
+     </div>
+
+    </div>
+
+   `).join("");
+
+
+  let reviewHTML="";
+
+
+  if(t.status==="closed"){
+
+   if(t.review){
+
+    reviewHTML=`
+
+     <div class="review-box">
+
+      <div class="muted">
+       La tua recensione
+      </div>
+
+      <div class="review-stars">
+       ${starsHTML(t.review.rating)}
+      </div>
+
+      ${
+       t.review.comment
+       ?`<div class="meta">
+          ${safe(t.review.comment)}
+         </div>`
+       :""
+      }
+
+     </div>
+
+    `;
+
+   }else{
+
+    reviewHTML=`
+
+     <div class="review-box">
+
+      <strong>
+       ⭐ Com'è stata l'assistenza?
+      </strong>
+
+      <p class="muted">
+       Lascia una recensione per questo ticket.
+      </p>
+
+      <div class="stars">
+
+       ${[1,2,3,4,5].map(n=>`
+
+        <button
+         class="star"
+         id="star-${t.id}-${n}"
+         onclick="selectRating('${t.id}',${n})"
+        >
+         ★
+        </button>
+
+       `).join("")}
+
+      </div>
+
+      <textarea
+       id="review-comment-${t.id}"
+       placeholder="Scrivi un commento...">
+      </textarea>
+
+      <button
+       class="primary"
+       onclick="submitReview('${t.id}')"
+      >
+       Invia recensione ⭐
+      </button>
+
+     </div>
+
+    `;
+
+   }
+
+  }
+
+
+  return`
+
+   <div class="ticket">
+
+    <div class="ticket-top">
+
+     <div>
+
+      <div class="ticket-title">
+       ${safe(t.title)}
+      </div>
+
+      <div class="meta">
+
+       ${safe(t.type)}
+       • ${t.created}
+       • ${safe(t.id)}
+
+      </div>
+
+     </div>
+
+     ${status(t.status)}
+
+    </div>
+
+    <div class="ticket-description">
+     ${safe(t.description)}
+    </div>
+
+    ${replies}
+
+    ${reviewHTML}
+
+   </div>
+
+  `;
+
+ }).join("");
+
+}
+
+
+/* =========================
+   STAFF
+========================= */
+
+function renderStaff(){
+
+ if(session.role!=="staff")
+  return;
+
+
+ const search=
+ (
+  document.getElementById(
+   "staffSearch"
+  ).value||""
+ )
+ .toLowerCase();
+
+
+ const list=
+ tickets.filter(t=>
+
+  t.id.toLowerCase()
+  .includes(search)
+
+  ||
+
+  t.title.toLowerCase()
+  .includes(search)
+
+  ||
+
+  t.userName.toLowerCase()
+  .includes(search)
+
+  ||
+
+  t.userEmail.toLowerCase()
+  .includes(search)
+
+  ||
+
+  t.type.toLowerCase()
+  .includes(search)
+
+ );
+
+
+ const box=
+ document.getElementById(
+  "staffTickets"
+ );
+
+
+ if(!list.length){
+
+  box.innerHTML=
+  '<p class="muted">Nessun ticket trovato.</p>';
+
+ }else{
+
+
+  box.innerHTML=
+  list.slice().reverse().map(t=>{
+
+   const replies=
+    (t.replies||[])
+    .map(r=>`
+
+     <div class="reply ${
+      r.authorRole==="staff"
+      ?"staff"
+      :""
+     }">
+
+      <div class="reply-author">
+
+       ${
+        r.authorRole==="staff"
+        ?"👑 Staff"
+        :"👤 Utente"
+       }
+
+       • ${r.date}
+
+      </div>
+
+      <div class="reply-text">
+       ${safe(r.text)}
+      </div>
+
+     </div>
+
+    `).join("");
+
+
+   let reviewHTML="";
+
+
+   if(t.review){
+
+    reviewHTML=`
+
+     <div class="review-box">
+
+      <strong>
+       ⭐ Recensione utente
+      </strong>
+
+      <div class="review-stars">
+       ${starsHTML(t.review.rating)}
+      </div>
+
+      ${
+       t.review.comment
+       ?`<div class="meta">
+          ${safe(t.review.comment)}
+         </div>`
+       :""
+      }
+
+     </div>
+
+    `;
+
+   }
+
+
+   return`
+
+    <div class="ticket">
+
+     <div class="ticket-top">
+
+      <div>
+
+       <div class="ticket-title">
+        ${safe(t.title)}
+       </div>
+
+       <div class="meta">
+
+        👤 ${safe(t.userName)}
+
+        • ${safe(t.userEmail)}
+
+        • ${safe(t.type)}
+
+        • ${t.created}
+
+        • ${safe(t.id)}
+
+       </div>
+
+      </div>
+
+      ${status(t.status)}
+
+     </div>
+
+     <div class="ticket-description">
+      ${safe(t.description)}
+     </div>
+
+     ${replies}
+
+     ${reviewHTML}
+
+     <div class="reply-area">
+
+      <textarea
+       id="reply-${t.id}"
+       placeholder="Scrivi una risposta..."
+      ></textarea>
+
+      <button
+       class="primary"
+       onclick="reply('${t.id}')"
+      >
+       💬 Invia risposta
+      </button>
+
+     </div>
+
+     <div class="actions">
+
+      <button
+       class="blue"
+       onclick="changeStatus(
+        '${t.id}',
+        'progress'
+       )"
+      >
+       🔧 In lavorazione
+      </button>
+
+      <button
+       class="greenbtn"
+       onclick="changeStatus(
+        '${t.id}',
+        'closed'
+       )"
+      >
+       ✅ Risolto
+      </button>
+
+      <button
+       class="red"
+       onclick="changeStatus(
+        '${t.id}',
+        'open'
+       )"
+      >
+       🔄 Riapri
+      </button>
+
+      <button
+       class="red"
+       onclick="deleteTicket(
+        '${t.id}'
+       )"
+      >
+       🗑️ Elimina
+      </button>
+
+     </div>
+
+    </div>
+
+   `;
+
+  }).join("");
+
+ }
+
+
+ updateStaffStats();
+
+ renderStaffReviews();
+
+}
+
+
+/* =========================
+   RISPOSTA STAFF
+========================= */
+
+function reply(id){
+
+ if(session.role!=="staff")
+  return;
+
+
+ const box=
+ document.getElementById(
+  "reply-"+id
+ );
+
+
+ if(!box)
+  return;
+
+
+ const text=
+ box.value.trim();
+
+
+ if(!text){
+
+  toast(
+   "Scrivi una risposta."
+  );
+
+  return;
+
+ }
+
+
+ const t=
+ tickets.find(
+  x=>x.id===id
+ );
+
+
+ if(!t)
+  return;
+
+
+ if(!t.replies)
+  t.replies=[];
+
+
+ t.replies.push({
+
+  authorRole:"staff",
+
+  text,
+
+  date:
+   new Date().toLocaleString(
+    "it-IT"
+   )
+
+ });
+
+
+ notifications.push({
+
+  id:crypto.randomUUID(),
+
+  userId:t.userId,
+
+  title:"💬 Nuova risposta",
+
+  text:
+   "Lo Staff ha risposto al ticket "+
+   t.id+".",
+
+  date:
+   new Date().toLocaleString(
+    "it-IT"
+   ),
+
+  read:false
+
+ });
+
+
+ save();
+
+ renderStaff();
+
+ toast(
+  "Risposta inviata 💬"
+ );
+
+}
+
+
+/* =========================
+   CAMBIA STATO
+========================= */
+
+function changeStatus(
+ id,
+ newStatus
+){
+
+ if(session.role!=="staff")
+  return;
+
+
+ const t=
+ tickets.find(
+  x=>x.id===id
+ );
+
+
+ if(!t)
+  return;
+
+
+ t.status=newStatus;
+
+
+ notifications.push({
+
+  id:crypto.randomUUID(),
+
+  userId:t.userId,
+
+  title:"🎫 Ticket aggiornato",
+
+  text:
+   "Il ticket "+
+   t.id+
+   " è ora: "+
+   statusText(newStatus)+
+   ".",
+
+  date:
+   new Date().toLocaleString(
+    "it-IT"
+   ),
+
+  read:false
+
+ });
+
+
+ save();
+
+ renderStaff();
+
+ toast(
+  "Stato aggiornato."
+ );
+
+}
+
+
+/* =========================
+   ELIMINA
+========================= */
+
+function deleteTicket(id){
+
+ if(session.role!=="staff")
+  return;
+
+
+ const ok=
+ confirm(
+  "Vuoi eliminare definitivamente questo ticket?"
+ );
+
+
+ if(!ok)
+  return;
+
+
+ tickets=
+ tickets.filter(
+  t=>t.id!==id
+ );
+
+
+ reviews=
+ reviews.filter(
+  r=>r.ticketId!==id
+ );
+
+
+ save();
+
+ renderStaff();
+
+ toast(
+  "Ticket eliminato."
+ );
+
+}
+
+
+/* =========================
+   RECENSIONI
+========================= */
+
+function selectRating(
+ ticketId,
+ rating
+){
+
+ for(let i=1;i<=5;i++){
+
+  const star=
+   document.getElementById(
+    `star-${ticketId}-${i}`
+   );
+
+  if(star){
+
+   star.classList.toggle(
+    "selected",
+    i<=rating
+   );
+
+  }
+
+ }
+
+ const ticket=
+  tickets.find(
+   t=>t.id===ticketId
+  );
+
+ if(ticket){
+
+  ticket.tempRating=rating;
+
+ }
+
+}
+
+
+/* INVIA RECENSIONE */
+
+function submitReview(ticketId){
+
+ const ticket=
+  tickets.find(
+   t=>
+    t.id===ticketId &&
+    t.userId===session.id
+  );
+
+
+ if(!ticket){
+
+  toast(
+   "Ticket non trovato."
+  );
+
+  return;
+
+ }
+
+
+ if(ticket.status!=="closed"){
+
+  toast(
+   "Puoi recensire solo un ticket risolto."
+  );
+
+  return;
+
+ }
+
+
+ if(ticket.review){
+
+  toast(
+   "Hai già recensito questo ticket."
+  );
+
+  return;
+
+ }
+
+
+ const rating=
+  Number(ticket.tempRating||0);
+
+
+ if(rating<1||rating>5){
+
+  toast(
+   "Seleziona da 1 a 5 stelle."
+  );
+
+  return;
+
+ }
+
+
+ const comment=
+  document.getElementById(
+   "review-comment-"+ticketId
+  ).value.trim();
+
+
+ const review={
+
+  id:crypto.randomUUID(),
+
+  ticketId,
+
+  userId:session.id,
+
+  userName:session.name,
+
+  rating,
+
+  comment,
+
+  date:
+   new Date().toLocaleString(
+    "it-IT"
+   )
+
+ };
+
+
+ ticket.review=review;
+
+
+ reviews.push(review);
+
+
+ save();
+
+ renderMyTickets();
+
+ renderStaffReviews();
+
+ toast(
+  "Recensione inviata ⭐"
+ );
+
+}
+
+
+/* RECENSIONI UTENTE */
+
+function renderMyReviews(){
+
+ const box=
+  document.getElementById(
+   "myReviews"
+  );
+
+
+ const list=
+  reviews.filter(
+   r=>r.userId===session.id
+  )
+  .slice()
+  .reverse();
+
+
+ if(!list.length){
+
+  box.innerHTML=
+   '<p class="muted">Non hai ancora lasciato recensioni.</p>';
+
+  return;
+
+ }
+
+
+ box.innerHTML=
+  list.map(r=>`
+
+   <div class="review-card">
+
+    <div class="review-stars">
+     ${starsHTML(r.rating)}
+    </div>
+
+    <div class="meta">
+     Ticket: ${safe(r.ticketId)}
+    </div>
+
+    ${
+     r.comment
+     ?`<p>${safe(r.comment)}</p>`
+     :""
+    }
+
+    <div class="notification-date">
+     ${safe(r.date)}
+    </div>
+
+   </div>
+
+  `).join("");
+
+}
+
+
+/* RECENSIONI STAFF */
+
+function renderStaffReviews(){
+
+ if(session.role!=="staff")
+  return;
+
+
+ const box=
+  document.getElementById(
+   "staffReviewsList"
+  );
+
+
+ const list=
+  reviews.slice()
+  .reverse();
+
+
+ if(!list.length){
+
+  box.innerHTML=
+   '<p class="muted">Nessuna recensione.</p>';
+
+  return;
+
+ }
+
+
+ const total=
+  list.reduce(
+   (sum,r)=>sum+Number(r.rating),
+   0
+  );
+
+
+ const average=
+  total/list.length;
+
+
+ document.getElementById(
+  "staffReviews"
+ ).textContent=
+ list.length;
+
+
+ box.innerHTML=`
+
+  <div class="review-average">
+
+   <div class="average-number">
+    ⭐ ${average.toFixed(1)}
+   </div>
+
+   <div>
+
+    <div class="review-stars">
+     ${starsHTML(
+      Math.round(average)
+     )}
+    </div>
+
+    <div class="muted">
+     Media su ${list.length} recensioni
+    </div>
+
+   </div>
+
+  </div>
+
+  ${list.map(r=>`
+
+   <div class="review-card">
+
+    <div>
+     <strong>
+      ${safe(r.userName)}
+     </strong>
+    </div>
+
+    <div class="review-stars">
+     ${starsHTML(r.rating)}
+    </div>
+
+    <div class="meta">
+     Ticket: ${safe(r.ticketId)}
+     • ${safe(r.date)}
+    </div>
+
+    ${
+     r.comment
+     ?`<p>${safe(r.comment)}</p>`
+     :""
+    }
+
+   </div>
+
+  `).join("")}
+
+ `;
+
+}
+
+
+/* STELLE */
+
+function starsHTML(rating){
+
+ const value=
+  Math.max(
+   0,
+   Math.min(
+    5,
+    Number(rating)||0
+   )
+  );
+
+
+ return [1,2,3,4,5]
+  .map(
+   n=>n<=value?"★":"☆"
+  )
+  .join("");
+
+}
+
+
+/* =========================
+   STAFF STATS
+========================= */
+
+function updateStaffStats(){
+
+ document.getElementById(
+  "staffTotal"
+ ).textContent=
+ tickets.length;
+
+
+ document.getElementById(
+  "staffOpen"
+ ).textContent=
+ tickets.filter(
+  t=>t.status==="open"
+ ).length;
+
+
+ document.getElementById(
+  "staffProgress"
+ ).textContent=
+ tickets.filter(
+  t=>t.status==="progress"
+ ).length;
+
+
+ document.getElementById(
+  "staffClosed"
+ ).textContent=
+ tickets.filter(
+  t=>t.status==="closed"
+ ).length;
+
+
+ document.getElementById(
+  "staffReviews"
+ ).textContent=
+ reviews.length;
+
+}
+
+
+/* =========================
+   NOTIFICHE
+========================= */
+
+function renderNotifications(){
+
+ const box=
+ document.getElementById(
+  "notificationsList"
+ );
+
+
+ const list=
+ notifications.filter(
+  n=>n.userId===session.id
+ )
+ .slice()
+ .reverse();
+
+
+ if(!list.length){
+
+  box.innerHTML=
+   '<div class="card muted">Nessuna notifica.</div>';
+
+  return;
+
+ }
+
+
+ box.innerHTML=
+ list.map(n=>`
+
+  <div class="notification ${
+   n.read?"":"unread"
+  }">
+
+   <div class="notification-title">
+    ${safe(n.title)}
+   </div>
+
+   <div class="notification-text">
+    ${safe(n.text)}
+   </div>
+
+   <div class="notification-date">
+    ${safe(n.date)}
+   </div>
+
+  </div>
+
+ `).join("");
+
+}
+
+
+/* =========================
+   PROFILO
+========================= */
+
+function renderProfile(){
+
+ document.getElementById(
+  "profileEmail"
+ ).textContent=
+ session.email;
+
+
+ document.getElementById(
+  "profileName"
+ ).value=
+ session.name;
+
+}
+
+
+function saveProfile(){
+
+ const name=
+ document.getElementById(
+  "profileName"
+ ).value.trim();
+
+
+ if(!name){
+
+  toast(
+   "Inserisci un nome."
+  );
+
+  return;
+
+ }
+
+
+ session.name=name;
+
+ updateUser();
+
+ document.getElementById(
+  "username"
+ ).textContent=name;
+
+ document.getElementById(
+  "homeName"
+ ).textContent=name;
+
+ toast(
+  "Profilo aggiornato 💾"
+ );
+
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+function status(s){
+
+ if(s==="open")
+
+  return `
+   <span class="status open">
+    APERTO
+   </span>
+  `;
+
+
+ if(s==="progress")
+
+  return `
+   <span class="status progress">
+    IN LAVORAZIONE
+   </span>
+  `;
+
+
+ return `
+  <span class="status closed">
+   RISOLTO
+  </span>
+ `;
+
+}
+
+
+function statusText(s){
+
+ if(s==="open")
+  return "Aperto";
+
+ if(s==="progress")
+  return "In lavorazione";
+
+ return "Risolto";
+
+}
+
+
+/* =========================
+   SICUREZZA HTML
+========================= */
+
+function safe(value){
+
+ const div=
+  document.createElement(
+   "div"
+  );
+
+ div.textContent=
+  String(value??"");
+
+ return div.innerHTML;
+
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+function toast(message){
+
+ const box=
+  document.getElementById(
+   "toast"
+  );
+
+
+ box.textContent=message;
+
+ box.style.display="block";
+
+
+ clearTimeout(
+  window.toastTimer
+ );
+
+
+ window.toastTimer=
+  setTimeout(()=>{
+
+   box.style.display="none";
+
+  },2500);
+
+}
+
+
+/* =========================
+   REFRESH
+========================= */
+
+function refresh(){
+
+ if(!session)
+  return;
+
+
+ renderHome();
+
+ renderPurchases();
+
+ renderGoal();
+
+ renderMyTickets();
+
+ renderMyReviews();
+
+ renderNotifications();
+
+ renderProfile();
+
+
+ if(session.role==="staff"){
+
+  renderStaff();
+
+ }
+
+}
+
+
+/* =========================
+   SESSIONE
+========================= */
+
+if(session){
+
+ const real=
+  users.find(
+   u=>u.id===session.id
+  );
+
+
+ if(real){
+
+  session=real;
+
+  start();
+
+ }else{
+
+  session=null;
+
+  localStorage.removeItem(
+   "QCD_SESSION"
+  );
+
+ }
+
+}
+
+</script>
+
+</body>
+</html>
